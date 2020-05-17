@@ -31,7 +31,7 @@ namespace FlockingSimulator.Buckets
         #endregion
         #region Methods
         #region Unity
-        private void OnDrawGizmos()
+        private void OnDrawGizmosSelected()
         {
             Gizmos.color = Color.green;
             Gizmos.DrawWireCube(transform.position + Size / 2, Size);
