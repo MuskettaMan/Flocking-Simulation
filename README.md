@@ -14,9 +14,9 @@ More complex rules can be added, such as obstacle avoidance and goal seeking.
 - Type: 3D
 - Date started: 17/05/2020
 ## Sources
-- https://www.youtube.com/watch?v=mhjuuHl6qHM
-- https://en.wikipedia.org/wiki/Boids
+- [Coding Challenge Boids](https://www.youtube.com/watch?v=mhjuuHl6qHM)
+- [Wikipedia boids](https://en.wikipedia.org/wiki/Boids)
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTg3MjU0ODk4OCwtMzYyMTQxNzAxLDExNj
-g0NzEyNjVdfQ==
+eyJoaXN0b3J5IjpbMTAyODM3NDQ0OCwxODcyNTQ4OTg4LC0zNj
+IxNDE3MDEsMTE2ODQ3MTI2NV19
 -->
