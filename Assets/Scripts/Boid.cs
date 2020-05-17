@@ -40,8 +40,6 @@ namespace FlockingSimulator
         #endregion
         #region Private
 
-        private List<Boid> boids;
-
         private FlockingForces flockingForces;
 
         private bool forcesApplied = true;
@@ -52,7 +50,6 @@ namespace FlockingSimulator
 
         private void Start()
         {
-            boids = FlockingManager.Instance.Boids;
             rigidbody = GetComponent<Rigidbody>();
 
             var size = GameManager.Instance.Size;
@@ -78,7 +75,24 @@ namespace FlockingSimulator
 
             int total = 0;
 
-            foreach(Boid boid in Bucket.Boids)
+            Collider[] colliders = Physics.OverlapSphere(transform.position, perceptionRadius);
+            List<Bucket> buckets = new List<Bucket>();
+            for (int i = 0; i < colliders.Length; i++)
+            {
+                Bucket tryBucket;
+                if(colliders[i].TryGetComponent<Bucket>(out tryBucket))
+                {
+                    buckets.Add(tryBucket);
+                }
+            }
+
+            List<Boid> boids = new List<Boid>();
+            for(int i = 0; i < buckets.Count; i++)
+            {
+                boids.AddRange(buckets[i].Boids);
+            }
+
+            foreach(Boid boid in boids)
             {
                 float d = Vector3.Distance(transform.position, boid.transform.position);
 

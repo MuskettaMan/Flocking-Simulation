@@ -29,8 +29,6 @@ namespace FlockingSimulator
 
         #endregion
         #region Public
-        public event Action<List<Boid>> BoidsInstantiated;
-
         public List<Boid> Boids { get; private set; }
 
         public static FlockingManager Instance { get; private set; }
@@ -63,8 +61,6 @@ namespace FlockingSimulator
                 clone.name = $"Boid: {i}";
                 Boids.Add(clone);
             }
-
-            BoidsInstantiated?.Invoke(Boids);
         }
 
         private void Update()

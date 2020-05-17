@@ -32,26 +32,25 @@ namespace FlockingSimulator.Buckets
 
         public BoxCollider Collider { get; set; }
 
-        public List<Boid> Boids => boids;
+        public List<Boid> Boids { get; set; }
         #endregion
         #region Private
-        private List<Boid> boids;
         #endregion
         #endregion
         #region Methods
         #region Unity
         private void Awake()
         {
-            boids = new List<Boid>();
+            Boids = new List<Boid>();
             Collider = GetComponent<BoxCollider>();
         }
 
         private void OnDrawGizmosSelected()
         {
             Gizmos.color = Color.cyan;
-            for(int i = 0; i < boids.Count; i++)
+            for(int i = 0; i < Boids.Count; i++)
             {
-                Gizmos.DrawLine(transform.localPosition, boids[i].transform.localPosition);
+                Gizmos.DrawLine(transform.localPosition, Boids[i].transform.localPosition);
             }
         }
         #endregion
@@ -81,8 +80,8 @@ namespace FlockingSimulator.Buckets
             if(other.TryGetComponent<Boid>(out boid))
             {
                 boid.Bucket = this;
-                if (!boids.Contains(boid))
-                    boids.Add(boid);
+                if (!Boids.Contains(boid))
+                    Boids.Add(boid);
             }
         }
 
@@ -91,26 +90,9 @@ namespace FlockingSimulator.Buckets
             Boid boid;
             if (other.TryGetComponent<Boid>(out boid))
             {
-                if (boids.Contains(boid))
-                    boids.Remove(boid);
+                if (Boids.Contains(boid))
+                    Boids.Remove(boid);
             }
-        }
-
-        public void AddBoid(Boid boid)
-        {
-            if (boids.Contains(boid))
-                return;
-
-            boids.Add(boid);
-            boid.Bucket = this;
-        }
-
-        public void RemoveBoid(Boid boid)
-        {
-            if (!boids.Contains(boid))
-                return;
-
-            boids.Remove(boid);
         }
         #endregion
         #region Protected

@@ -31,15 +31,12 @@ namespace FlockingSimulator.Buckets
         #endregion
         #region Private
         private Bucket[,,] buckets;
-        private List<Boid> boids;
         #endregion
         #endregion
         #region Methods
         #region Unity
         private void Awake()
         {
-            flockingManager.BoidsInstantiated += OnBoidsInstantiated;
-
             buckets = new Bucket[resolution, resolution, resolution];
             var fieldSize = GameManager.Instance.Size;
 
@@ -64,28 +61,6 @@ namespace FlockingSimulator.Buckets
 
         #endregion
         #region Private
-        private void OnBoidsInstantiated(List<Boid> boids)
-        {
-            this.boids = boids;
-            StartCoroutine(SetInitialBuckets());
-        }
-
-        private IEnumerator SetInitialBuckets()
-        {
-            yield return new WaitForEndOfFrame(); 
-
-            for (int i = 0; i < boids.Count; i++)
-            {
-                foreach (Bucket bucket in buckets)
-                {
-                    if (bucket.IsInBucket(boids[i]))
-                    {
-                        bucket.AddBoid(boids[i]);
-                        break;
-                    }
-                }
-            }
-        }
         #endregion
         #endregion
     }
