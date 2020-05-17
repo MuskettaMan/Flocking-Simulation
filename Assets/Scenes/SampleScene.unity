@@ -1185,13 +1185,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalRotation: {x: 0.15674971, y: -0.4237634, z: 0.07472093, w: 0.88897187}
+  m_LocalPosition: {x: 189.6, y: 105, z: -63.1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 20, y: -50.973003, z: 0}
 --- !u!1 &1072273593
 GameObject:
   m_ObjectHideFlags: 0
@@ -1235,7 +1235,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18a01e71b567fd44a990d56f771a5ee8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  resolution: 2
+  resolution: 6
   bucketPrefab: {fileID: 8802420889804281461, guid: 3112ba3cf30512b47a051311761c9959,
     type: 3}
   flockingManager: {fileID: 1701855317}
@@ -2119,7 +2119,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 555721d66a46a804cad3d3c51254d9ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  size: {x: 25, y: 25, z: 25}
+  fieldSize: {x: 100, y: 100, z: 100}
 --- !u!1 &1683837281
 GameObject:
   m_ObjectHideFlags: 0
@@ -2252,7 +2252,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb1f56ef61b250f4f994dabde2817dd1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boidAmount: 10
+  boidAmount: 500
   boidPrefab: {fileID: 2759136058348873408, guid: 32b18d3bb86ceb64db33713f9c799e9e,
     type: 3}
   controlSliders:
