@@ -11,7 +11,7 @@ namespace FlockingSimulator.Buckets
 {
 
     ///<summary>
-    ///Class Description
+    /// Keeps track of the contents inside its collider box
     ///</summary>
     [RequireComponent(typeof(BoxCollider))]
     public class Bucket : MonoBehaviour
@@ -21,6 +21,9 @@ namespace FlockingSimulator.Buckets
 
         #endregion
         #region Public
+        /// <summary>
+        /// Size of the Bucket
+        /// </summary>
         public Vector3 Size
         {
             get => transform.localScale;
@@ -30,8 +33,14 @@ namespace FlockingSimulator.Buckets
             }
         }
 
+        /// <summary>
+        /// Box collider surrounding the bucket
+        /// </summary>
         public BoxCollider Collider { get; set; }
 
+        /// <summary>
+        /// All the boids currently in the bucket
+        /// </summary>
         public List<Boid> Boids { get; set; }
         #endregion
         #region Private
@@ -39,12 +48,18 @@ namespace FlockingSimulator.Buckets
         #endregion
         #region Methods
         #region Unity
+        /// <summary>
+        /// Instantiation
+        /// </summary>
         private void Awake()
         {
             Boids = new List<Boid>();
             Collider = GetComponent<BoxCollider>();
         }
 
+        /// <summary>
+        /// Debug info
+        /// </summary>
         private void OnDrawGizmosSelected()
         {
             Gizmos.color = Color.cyan;
@@ -55,25 +70,10 @@ namespace FlockingSimulator.Buckets
         }
         #endregion
         #region Public
-        public bool IsInBucket(Boid boid)
-        {
-            bool insideX = false;
-            bool insideY = false;
-            bool insideZ = false;
-
-            insideX = boid.transform.localPosition.x < transform.localScale.x + transform.localPosition.x &&
-                boid.transform.localPosition.x > transform.localPosition.x;
-
-            insideY = boid.transform.localPosition.y < transform.localScale.y + transform.localPosition.y &&
-                boid.transform.localPosition.y > transform.localPosition.y;
-
-            insideZ = boid.transform.localPosition.z < transform.localScale.z + transform.localPosition.z &&
-                boid.transform.localPosition.z > transform.localPosition.z;
-
-
-            return insideX && insideY && insideZ;
-        }
-
+        /// <summary>
+        /// When a bucket enters it's colliders it gets added to the bucket
+        /// </summary>
+        /// <param name="other"></param>
         private void OnTriggerEnter(Collider other)
         {
             Boid boid;
@@ -85,6 +85,10 @@ namespace FlockingSimulator.Buckets
             }
         }
 
+        /// <summary>
+        /// When a bucket exits the bucket's collider it gets removed from the bucket
+        /// </summary>
+        /// <param name="other"></param>
         private void OnTriggerExit(Collider other)
         {
             Boid boid;

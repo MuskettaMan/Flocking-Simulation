@@ -12,52 +12,80 @@ namespace FlockingSimulator
 {
 
     ///<summary>
-    ///Class Description
+    /// Boid behaviour
     ///</summary>
     [RequireComponent(typeof(Rigidbody))]
     public class Boid : MonoBehaviour
     {
         #region Variables
         #region Editor
-        [SerializeField]
+        /// <summary>
+        /// The radius it can 'sense' other boids
+        /// </summary>
+        [SerializeField, Tooltip("The radius it can 'sense' other boids")]
         private float perceptionRadius;
 
-        [SerializeField]
+
+        /// <summary>
+        /// The maximum velocity the boid can go
+        /// </summary>
+        [SerializeField, Tooltip("The maximum velocity the boid can go")]
         private float maxSpeed;
 
-        [SerializeField]
+        /// <summary>
+        /// The maximum force that can be applied to the rigidbody
+        /// </summary>
+        [SerializeField, Tooltip("The maximum force that can be applied to the rigidbody")]
         private float maxForce;
         #endregion
         #region Public
+        /// <summary>
+        /// Reference to the rigidbody component
+        /// </summary>
         public new Rigidbody rigidbody { get; private set; }
+
+        /// <summary>
+        /// Public accessor for the perception radius
+        /// <para>The radius it can 'sense' other boids</para>
+        /// </summary>
         public float PerceptionRadius
         {
             get => perceptionRadius;
             private set => perceptionRadius = value;
         }
 
+        /// <summary>
+        /// The bucket this boid is contained inside
+        /// </summary>
         public Bucket Bucket { get; set; }
         #endregion
         #region Private
-
+        /// <summary>
+        /// The flocking forces that will be / are applied this frame
+        /// </summary>
         private FlockingForces flockingForces;
-
-        private bool forcesApplied = true;
         #endregion
         #endregion
         #region Methods
         #region Unity
 
+        /// <summary>
+        /// Gets components
+        /// Setup starting position and velocity
+        /// </summary>
         private void Start()
         {
             rigidbody = GetComponent<Rigidbody>();
 
-            var size = GameManager.Instance.Size;
+            var size = GameManager.Instance.FieldSize;
             transform.localPosition = new Vector3(Random.Range(0, size.x), Random.Range(0, size.y), Random.Range(0, size.z));
             rigidbody.velocity = new Vector3(GetRandom(), GetRandom(), GetRandom()).normalized;
             rigidbody.velocity *= Random.Range(5.0f, 6.0f);
         }
 
+        /// <summary>
+        /// Debug information
+        /// </summary>
         private void OnDrawGizmosSelected()
         {
             Gizmos.color = Color.blue;
@@ -65,9 +93,11 @@ namespace FlockingSimulator
         }
         #endregion
         #region Public
+        /// <summary>
+        /// The flock behaviour
+        /// </summary>
         public void Flock()
         {
-
             if (Bucket == null)
                 return;
 
@@ -75,22 +105,7 @@ namespace FlockingSimulator
 
             int total = 0;
 
-            Collider[] colliders = Physics.OverlapSphere(transform.position, perceptionRadius);
-            List<Bucket> buckets = new List<Bucket>();
-            for (int i = 0; i < colliders.Length; i++)
-            {
-                Bucket tryBucket;
-                if(colliders[i].TryGetComponent<Bucket>(out tryBucket))
-                {
-                    buckets.Add(tryBucket);
-                }
-            }
-
-            List<Boid> boids = new List<Boid>();
-            for(int i = 0; i < buckets.Count; i++)
-            {
-                boids.AddRange(buckets[i].Boids);
-            }
+            var boids = GetBoidsFromSurroundingBuckets();
 
             foreach(Boid boid in boids)
             {
@@ -135,46 +150,38 @@ namespace FlockingSimulator
                 flockingForces.separation = flockingForces.separation.Limit(maxForce);
             }
 
-            if (forcesApplied)
-            {
-                flockingForces.alignment *= FlockingManager.Instance.ControlSliders.AlignmentSlider.value;
-                flockingForces.cohesion *= FlockingManager.Instance.ControlSliders.CohesionSlider.value;
-                flockingForces.separation *= FlockingManager.Instance.ControlSliders.SeparationSlider.value;
-                forcesApplied = false;
-            }
+            // Increases behaviours from UI sliders
+            flockingForces.alignment *= FlockingManager.Instance.ControlSliders.AlignmentSlider.value;
+            flockingForces.cohesion *= FlockingManager.Instance.ControlSliders.CohesionSlider.value;
+            flockingForces.separation *= FlockingManager.Instance.ControlSliders.SeparationSlider.value;
         }
 
+        /// <summary>
+        /// Applies the forces computed from <see cref="Flock"/> onto the boids rigidbody
+        /// </summary>
         public void ApplyForces()
         {
-            if (flockingForces.alignment.magnitude > 10)
-                Debug.LogError($"High alignment magnitude: {flockingForces.alignment.magnitude}, for {name}");
-                
-            if(flockingForces.cohesion.magnitude > 10)
-                Debug.LogError($"High cohesion magnitude: {flockingForces.cohesion.magnitude}, for {name}");
-
-            if (flockingForces.separation.magnitude > 10)
-                Debug.LogError($"High separation magnitude: {flockingForces.separation.magnitude}, for {name}");
-
             rigidbody.AddForce(flockingForces.alignment);
             rigidbody.AddForce(flockingForces.cohesion);
             rigidbody.AddForce(flockingForces.separation);
-
-            forcesApplied = true;
         }
 
+        /// <summary>
+        /// Keeps the boids contained in the field size
+        /// </summary>
         public void Edges()
         {
             Vector3 pos = transform.position;
 
             for(int i = 0; i < 3; i++)
             {
-                if (pos[i] > GameManager.Instance.Size[i])
+                if (pos[i] > GameManager.Instance.FieldSize[i])
                 {
                     pos[i] = 0;
                 }
                 else if (pos[i] < 0)
                 {
-                    pos[i] = GameManager.Instance.Size[i];
+                    pos[i] = GameManager.Instance.FieldSize[i];
                 }
             }
 
@@ -185,6 +192,10 @@ namespace FlockingSimulator
 
         #endregion
         #region Private
+        /// <summary>
+        /// Used for setting the initial velocity
+        /// </summary>
+        /// <returns>A random value of 1 or -1</returns>
         private int GetRandom()
         {
             int random = Random.Range(0, 2);
@@ -192,6 +203,32 @@ namespace FlockingSimulator
                 return -1;
             else
                 return random;
+        }
+
+        /// <summary>
+        /// Get all the buckets that are visible in the perception radius
+        /// </summary>
+        /// <returns></returns>
+        private List<Boid> GetBoidsFromSurroundingBuckets()
+        {
+            Collider[] colliders = Physics.OverlapSphere(transform.position, perceptionRadius);
+            List<Bucket> buckets = new List<Bucket>();
+            for (int i = 0; i < colliders.Length; i++)
+            {
+                Bucket tryBucket;
+                if (colliders[i].TryGetComponent<Bucket>(out tryBucket))
+                {
+                    buckets.Add(tryBucket);
+                }
+            }
+
+            List<Boid> boids = new List<Boid>();
+            for (int i = 0; i < buckets.Count; i++)
+            {
+                boids.AddRange(buckets[i].Boids);
+            }
+
+            return boids;
         }
         #endregion
         #endregion

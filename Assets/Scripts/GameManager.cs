@@ -10,18 +10,28 @@ namespace nl.DTT.KVA.Example
 {
 
     ///<summary>
-    ///Class Description
+    /// Handles generic functionality for tying the game together
     ///</summary>
     public class GameManager : MonoBehaviour
     {
         #region Variables
         #region Editor
-        [SerializeField]
-        private Vector3 size = new Vector3(50, 50, 50);
+        /// <summary>
+        /// Size of the the field all teh boids get spawned on
+        /// </summary>
+        [SerializeField, Tooltip("Size of the the field all teh boids get spawned on")]
+        private Vector3 fieldSize = new Vector3(50, 50, 50);
         #endregion
         #region Public
-        public Vector3 Size => size;
+        /// <summary>
+        /// Public accessor for field size
+        /// <para>Size of the the field all teh boids get spawned on</para>
+        /// </summary>
+        public Vector3 FieldSize => fieldSize;
 
+        /// <summary>
+        /// Singleton access
+        /// </summary>
         public static GameManager Instance;
         #endregion
         #region Private
@@ -30,6 +40,9 @@ namespace nl.DTT.KVA.Example
         #endregion
         #region Methods
         #region Unity
+        /// <summary>
+        /// Singleton setup
+        /// </summary>
         private void Awake()
         {
             if(Instance != this && Instance == null)
@@ -41,10 +54,13 @@ namespace nl.DTT.KVA.Example
             }
         }
 
+        /// <summary>
+        /// Debug information
+        /// </summary>
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.red;
-            Gizmos.DrawWireCube(transform.position + size / 2, size);
+            Gizmos.DrawWireCube(transform.position + fieldSize / 2, fieldSize);
         }
 
         #endregion

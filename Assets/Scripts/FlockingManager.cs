@@ -12,27 +12,46 @@ namespace FlockingSimulator
 {
 
     ///<summary>
-    ///Class Description
+    /// Manages all the boids
     ///</summary>
     public class FlockingManager : MonoBehaviour
     {
         #region Variables
         #region Editor
-        [SerializeField]
+        /// <summary>
+        /// The amount of boids that will be spawned at the start of the simulation
+        /// </summary>
+        [SerializeField, Tooltip("The amount of boids that will be spawned at the start of the simulation")]
         private int boidAmount;
 
-        [SerializeField]
+        /// <summary>
+        /// The type of boid to be used in the simulation
+        /// </summary>
+        [SerializeField, Tooltip("The type of boid to be used in the simulation")]
         private Boid boidPrefab;
 
-        [SerializeField]
+        /// <summary>
+        /// The sliders to control the flock behaviour
+        /// </summary>
+        [SerializeField, Tooltip("The sliders to control the flock behaviour")]
         private ControlSliders controlSliders;
 
         #endregion
         #region Public
+        /// <summary>
+        /// Every boid in the simulation
+        /// </summary>
         public List<Boid> Boids { get; private set; }
 
+        /// <summary>
+        /// Singleton instance
+        /// </summary>
         public static FlockingManager Instance { get; private set; }
 
+        /// <summary>
+        /// Public accessor for the control sliders
+        /// <para>The sliders to control the flock behaviour</para>
+        /// </summary>
         public ControlSliders ControlSliders => controlSliders;
         #endregion
         #region Private
@@ -40,6 +59,9 @@ namespace FlockingSimulator
         #endregion
         #region Methods
         #region Unity
+        /// <summary>
+        /// Setup singleton instance
+        /// </summary>
         private void Awake()
         {
             if(Instance != this && Instance == null)
@@ -51,6 +73,9 @@ namespace FlockingSimulator
             }
         }
 
+        /// <summary>
+        /// Instantiates all the boids 
+        /// </summary>
         private void Start()
         {
             Boids = new List<Boid>();
@@ -63,6 +88,9 @@ namespace FlockingSimulator
             }
         }
 
+        /// <summary>
+        /// Updates the flock behaviour for every boid
+        /// </summary>
         private void Update()
         {
             foreach (Boid boid in Boids)
@@ -89,6 +117,9 @@ namespace FlockingSimulator
         #endregion
     }
 
+    /// <summary>
+    /// Data struct for the different flock behaviour sliders
+    /// </summary>
     [Serializable]
     public struct ControlSliders
     {
@@ -101,22 +132,10 @@ namespace FlockingSimulator
         [SerializeField]
         private Slider separationSlider;
 
-        public Slider AlignmentSlider
-        {
-            get => alignmentSlider;
-            private set => alignmentSlider = value;
-        }
+        public Slider AlignmentSlider => cohesionSlider;
 
-        public Slider CohesionSlider
-        {
-            get => cohesionSlider;
-            private set => cohesionSlider = value;
-        }
+        public Slider CohesionSlider => cohesionSlider;
 
-        public Slider SeparationSlider
-        {
-            get => separationSlider;
-            private set => separationSlider = value;
-        }
+        public Slider SeparationSlider => separationSlider;
     }
 }
