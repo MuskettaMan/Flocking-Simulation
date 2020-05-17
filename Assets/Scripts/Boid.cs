@@ -1,8 +1,7 @@
 ﻿using FlockingSimulator.Extensions;
-using System.Collections;
+using nl.DTT.KVA.Example;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 /*
 *	Author  - Ferri de Lange
 *	Date	- 17.05.20
@@ -30,16 +29,19 @@ namespace FlockingSimulator
         #endregion
         #region Public
         public new Rigidbody rigidbody { get; private set; }
+        public float PerceptionRadius
+        {
+            get => perceptionRadius;
+            private set => perceptionRadius = value;
+        }
         #endregion
         #region Private
-        public float PerceptionRadius { 
-            get => perceptionRadius; 
-            private set => perceptionRadius = value; 
-        }
 
         private List<Boid> boids;
 
         private FlockingForces flockingForces;
+
+        private bool forcesApplied = true;
         #endregion
         #endregion
         #region Methods
@@ -50,8 +52,8 @@ namespace FlockingSimulator
             boids = FlockingManager.Instance.Boids;
             rigidbody = GetComponent<Rigidbody>();
 
-            var size = FlockingManager.Size;
-            transform.position = new Vector3(Random.Range(-size.x / 2, size.x / 2), Random.Range(-size.y / 2, size.y / 2), Random.Range(-size.z / 2, size.z / 2));
+            var size = GameManager.Instance.Size;
+            rigidbody.position = new Vector3(Random.Range(0, size.x), Random.Range(0, size.y), Random.Range(0, size.z));
             rigidbody.velocity = new Vector3(GetRandom(), GetRandom(), GetRandom()).normalized;
             rigidbody.velocity *= Random.Range(5.0f, 6.0f);
         }
@@ -65,6 +67,8 @@ namespace FlockingSimulator
         #region Public
         public void Flock()
         {
+            flockingForces.Reset();
+
             int total = 0;
 
             foreach(Boid boid in boids)
@@ -110,16 +114,31 @@ namespace FlockingSimulator
                 flockingForces.separation = flockingForces.separation.Limit(maxForce);
             }
 
-            flockingForces.alignment *= FlockingManager.Instance.ControlSliders.AlignmentSlider.value;
-            flockingForces.cohesion *= FlockingManager.Instance.ControlSliders.CohesionSlider.value;
-            flockingForces.separation *= FlockingManager.Instance.ControlSliders.SeparationSlider.value;
+            if (forcesApplied)
+            {
+                flockingForces.alignment *= FlockingManager.Instance.ControlSliders.AlignmentSlider.value;
+                flockingForces.cohesion *= FlockingManager.Instance.ControlSliders.CohesionSlider.value;
+                flockingForces.separation *= FlockingManager.Instance.ControlSliders.SeparationSlider.value;
+                forcesApplied = false;
+            }
         }
 
         public void ApplyForces()
         {
+            if (flockingForces.alignment.magnitude > 10)
+                Debug.LogError($"High alignment magnitude: {flockingForces.alignment.magnitude}, for {name}");
+                
+            if(flockingForces.cohesion.magnitude > 10)
+                Debug.LogError($"High cohesion magnitude: {flockingForces.cohesion.magnitude}, for {name}");
+
+            if (flockingForces.separation.magnitude > 10)
+                Debug.LogError($"High separation magnitude: {flockingForces.separation.magnitude}, for {name}");
+
             rigidbody.AddForce(flockingForces.alignment);
             rigidbody.AddForce(flockingForces.cohesion);
             rigidbody.AddForce(flockingForces.separation);
+
+            forcesApplied = true;
         }
 
         public void Edges()
@@ -128,13 +147,13 @@ namespace FlockingSimulator
 
             for(int i = 0; i < 3; i++)
             {
-                if (pos[i] > FlockingManager.Size[i] / 2)
+                if (pos[i] > GameManager.Instance.Size[i])
                 {
-                    pos[i] = -FlockingManager.Size[i] / 2;
+                    pos[i] = 0;
                 }
-                else if (pos[i] < -FlockingManager.Size[i] / 2)
+                else if (pos[i] < 0)
                 {
-                    pos[i] = FlockingManager.Size[i] / 2;
+                    pos[i] = GameManager.Instance.Size[i];
                 }
             }
 
@@ -168,6 +187,13 @@ namespace FlockingSimulator
             this.alignment = alignment;
             this.cohesion = cohesion;
             this.separation = separation;
+        }
+
+        public void Reset()
+        {
+            alignment = Vector3.zero;
+            cohesion = Vector3.zero;
+            separation = Vector3.zero;
         }
     }
 }

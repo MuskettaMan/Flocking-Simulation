@@ -29,7 +29,6 @@ namespace FlockingSimulator
 
         #endregion
         #region Public
-        public static readonly Vector3 Size = new Vector3(50, 50, 50);
 
         public List<Boid> Boids { get; private set; }
 
@@ -77,12 +76,6 @@ namespace FlockingSimulator
             {
                 boid.ApplyForces();
             }
-        }
-
-        private void OnDrawGizmos()
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireCube(transform.position, Size);
         }
         #endregion
         #region Public
