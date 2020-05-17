@@ -1235,9 +1235,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18a01e71b567fd44a990d56f771a5ee8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  resolution: 5
+  resolution: 2
   bucketPrefab: {fileID: 8802420889804281461, guid: 3112ba3cf30512b47a051311761c9959,
     type: 3}
+  flockingManager: {fileID: 1701855317}
 --- !u!1 &1119553349
 GameObject:
   m_ObjectHideFlags: 0
@@ -2251,7 +2252,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb1f56ef61b250f4f994dabde2817dd1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boidAmount: 25
+  boidAmount: 10
   boidPrefab: {fileID: 2759136058348873408, guid: 32b18d3bb86ceb64db33713f9c799e9e,
     type: 3}
   controlSliders:

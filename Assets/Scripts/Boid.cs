@@ -1,4 +1,5 @@
-﻿using FlockingSimulator.Extensions;
+﻿using FlockingSimulator.Buckets;
+using FlockingSimulator.Extensions;
 using nl.DTT.KVA.Example;
 using System.Collections.Generic;
 using UnityEngine;
@@ -34,6 +35,8 @@ namespace FlockingSimulator
             get => perceptionRadius;
             private set => perceptionRadius = value;
         }
+
+        public Bucket Bucket { get; set; }
         #endregion
         #region Private
 
@@ -53,7 +56,7 @@ namespace FlockingSimulator
             rigidbody = GetComponent<Rigidbody>();
 
             var size = GameManager.Instance.Size;
-            rigidbody.position = new Vector3(Random.Range(0, size.x), Random.Range(0, size.y), Random.Range(0, size.z));
+            transform.localPosition = new Vector3(Random.Range(0, size.x), Random.Range(0, size.y), Random.Range(0, size.z));
             rigidbody.velocity = new Vector3(GetRandom(), GetRandom(), GetRandom()).normalized;
             rigidbody.velocity *= Random.Range(5.0f, 6.0f);
         }
@@ -67,11 +70,15 @@ namespace FlockingSimulator
         #region Public
         public void Flock()
         {
+
+            if (Bucket == null)
+                return;
+
             flockingForces.Reset();
 
             int total = 0;
 
-            foreach(Boid boid in boids)
+            foreach(Boid boid in Bucket.Boids)
             {
                 float d = Vector3.Distance(transform.position, boid.transform.position);
 
