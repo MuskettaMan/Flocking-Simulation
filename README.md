@@ -1,6 +1,6 @@
 # Flocking Simulation
 ## Description
-A simulation 
+**Boids** is an artificial life program, developed by Craig Reynolds in 1986, which simulates the [flocking](https://en.wikipedia.org/wiki/Flocking_(behavior) "Flocking (behavior)") behaviour of birds. His paper on this topic was published in 1987 in the proceedings of the ACM SIGGRAPH conference. The name "boid" corresponds to a shortened version of "bird-oid object", which refers to a bird-like object. Incidentally, "boid" is also a New York Metropolitan dialect pronunciation for "bird".
 ## General
 - Unity Version: 2019.3.13f1
 - Type: 3D
@@ -9,5 +9,5 @@ A simulation
 - https://www.youtube.com/watch?v=mhjuuHl6qHM&t=2227s
 - https://en.wikipedia.org/wiki/Boids
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTM2OTkzOTYwMF19
+eyJoaXN0b3J5IjpbMTE2ODQ3MTI2NV19
 -->
