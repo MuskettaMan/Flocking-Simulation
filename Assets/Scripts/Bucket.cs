@@ -34,7 +34,7 @@ namespace FlockingSimulator.Buckets
         private void OnDrawGizmosSelected()
         {
             Gizmos.color = Color.green;
-            Gizmos.DrawWireCube(transform.position + Size / 2, Size);
+            Gizmos.DrawWireCube(transform.position + Size / 2, Size); 
         }
         #endregion
         #region Public
