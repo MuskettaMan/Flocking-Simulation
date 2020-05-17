@@ -15,8 +15,8 @@ More complex rules can be added, such as obstacle avoidance and goal seeking.
 - Date started: 17/05/2020
 ## Sources
 - [Coding Challenge Boids](https://www.youtube.com/watch?v=mhjuuHl6qHM)
-- [Wikipedia boids](https://en.wikipedia.org/wiki/Boids)
+- [Wikipedia Boids](https://en.wikipedia.org/wiki/Boids)
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTAyODM3NDQ0OCwxODcyNTQ4OTg4LC0zNj
+eyJoaXN0b3J5IjpbMTg5ODY2MDgxNiwxODcyNTQ4OTg4LC0zNj
 IxNDE3MDEsMTE2ODQ3MTI2NV19
 -->
