@@ -7,6 +7,7 @@ As with most artificial life simulations, Boids is an example of [emergent](http
 -   **separation**: steer to avoid crowding local flockmates
 -   **alignment**: steer towards the average heading of local flockmates
 -   **cohesion**: steer to move towards the average position (center of mass) of local flockmates
+-   **TODO: view**: mvoe laterally away from any boid that blocks the view
 
 More complex rules can be added, such as obstacle avoidance and goal seeking.
 ## General
