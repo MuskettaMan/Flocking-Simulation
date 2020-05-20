@@ -882,7 +882,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 0, y: 1.5459e-41, z: 0, w: 0}
+  m_BoundingSphereOverride: {x: 0, y: 3.4203e-41, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
@@ -2119,7 +2119,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 555721d66a46a804cad3d3c51254d9ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fieldSize: {x: 100, y: 100, z: 100}
+  fieldSize: {x: 50, y: 50, z: 50}
 --- !u!1 &1683837281
 GameObject:
   m_ObjectHideFlags: 0
@@ -2252,7 +2252,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb1f56ef61b250f4f994dabde2817dd1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boidAmount: 500
+  boidAmount: 200
   boidPrefab: {fileID: 2759136058348873408, guid: 32b18d3bb86ceb64db33713f9c799e9e,
     type: 3}
   controlSliders:
