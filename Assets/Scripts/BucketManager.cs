@@ -50,7 +50,7 @@ namespace FlockingSimulator.Buckets
         /// <summary>
         /// Setsup all the buckets
         /// </summary>
-        private void Awake()
+        private void Start()
         {
             buckets = new Bucket[resolution, resolution, resolution];
             var fieldSize = GameManager.Instance.FieldSize;

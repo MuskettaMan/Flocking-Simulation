@@ -37,6 +37,12 @@ namespace FlockingSimulator
         /// </summary>
         [SerializeField, Tooltip("The maximum force that can be applied to the rigidbody")]
         private float maxForce;
+
+        /// <summary>
+        /// The angle the boids can see in front of them
+        /// </summary>
+        [SerializeField, Tooltip("The angle the boids can see in front of them"), Range(0, 180)]
+        private float angle;
         #endregion
         #region Public
         /// <summary>
@@ -83,13 +89,25 @@ namespace FlockingSimulator
             rigidbody.velocity *= Random.Range(5.0f, 6.0f);
         }
 
+        private void Update()
+        {
+            rigidbody.rotation = Quaternion.LookRotation(rigidbody.velocity);
+        }
+
         /// <summary>
         /// Debug information
         /// </summary>
         private void OnDrawGizmosSelected()
         {
             Gizmos.color = Color.blue;
-            Gizmos.DrawWireSphere(rigidbody.position, perceptionRadius);
+            //Gizmos.DrawWireSphere(rigidbody.position, perceptionRadius);
+            Vector3 dir = new Vector3(Mathf.Sin(Mathf.Deg2Rad * angle), 0, Mathf.Cos(Mathf.Deg2Rad * angle)) * 4;
+            dir = transform.TransformDirection(dir);
+            Gizmos.DrawRay(transform.position, dir);
+
+            dir = new Vector3(Mathf.Sin(Mathf.Deg2Rad * -angle), 0, Mathf.Cos(Mathf.Deg2Rad * -angle)) * 4;
+            dir = transform.TransformDirection(dir);
+            Gizmos.DrawRay(transform.position, dir);
         }
         #endregion
         #region Public
@@ -109,22 +127,26 @@ namespace FlockingSimulator
 
             foreach(Boid boid in boids)
             {
-                float d = Vector3.Distance(transform.position, boid.transform.position);
+                Vector3 delta = transform.position - boid.transform.position;
 
-                if (d < perceptionRadius && boid != this)
+                if (delta.sqrMagnitude < perceptionRadius * perceptionRadius && boid != this)
                 {
-                    // Alignment
-                    flockingForces.alignment += boid.rigidbody.velocity;
+                    if (Vector3.Angle(transform.forward, delta) > -angle && Vector3.Angle(transform.forward, delta) < angle)
+                    {
+                        // Alignment
+                        flockingForces.alignment += boid.rigidbody.velocity;
 
-                    // Cohesion
-                    flockingForces.cohesion += boid.rigidbody.position;
+                        // Cohesion
+                        flockingForces.cohesion += boid.rigidbody.position;
 
-                    // Separation
-                    Vector3 diff = rigidbody.position - boid.rigidbody.position;
-                    diff /= d;
-                    flockingForces.separation += diff;
+                        // Separation
+                        Vector3 diff = rigidbody.position - boid.rigidbody.position;
+                        diff = new Vector3(diff.x * diff.x, diff.y * diff.y, diff.z * diff.z);
+                        diff /= delta.sqrMagnitude;
+                        flockingForces.separation += diff;
 
-                    total++;
+                        total++;
+                    }
                 }
             }
 
