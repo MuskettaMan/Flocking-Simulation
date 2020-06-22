@@ -21,7 +21,7 @@ namespace FlockingSimulator.Buckets
         /// Resolution of the amount of buckets (1 -> 1, 2 -> 8, 3 -> 27, etc.)
         /// </summary>
         [SerializeField, Tooltip("Resolution of the amount of buckets (1 -> 1, 2 -> 8, 3 -> 27, etc.)")]
-        private int resolution;
+        private Vector3Int resolution;
 
         /// <summary>
         /// Prefab of what bucket to instantiate
@@ -52,17 +52,17 @@ namespace FlockingSimulator.Buckets
         /// </summary>
         private void Start()
         {
-            buckets = new Bucket[resolution, resolution, resolution];
+            buckets = new Bucket[resolution.x, resolution.y, resolution.z];
             var fieldSize = GameManager.Instance.FieldSize;
 
-            for (int i = 0; i < resolution; i++)
+            for (int i = 0; i < resolution.x; i++)
             {
-                for(int j = 0; j < resolution; j++)
+                for(int j = 0; j < resolution.y; j++)
                 {
-                    for(int k = 0; k < resolution; k++)
+                    for(int k = 0; k < resolution.z; k++)
                     {
                         var bucket = buckets[i, j, k] = Instantiate(bucketPrefab, transform);
-                        bucket.Size = fieldSize / resolution;
+                        bucket.Size = new Vector3(fieldSize.x / resolution.x, fieldSize.y / resolution.y, fieldSize.z / resolution.z);
                         bucket.transform.localPosition = new Vector3(bucket.Size.x * i, bucket.Size.y * j, bucket.Size.z * k);
                     }
                 }

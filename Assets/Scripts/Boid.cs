@@ -70,6 +70,8 @@ namespace FlockingSimulator
         /// The flocking forces that will be / are applied this frame
         /// </summary>
         private FlockingForces flockingForces;
+
+        private Vector3 edgeForces;
         #endregion
         #endregion
         #region Methods
@@ -83,10 +85,7 @@ namespace FlockingSimulator
         {
             rigidbody = GetComponent<Rigidbody>();
 
-            var size = GameManager.Instance.FieldSize;
-            transform.localPosition = new Vector3(Random.Range(0, size.x), Random.Range(0, size.y), Random.Range(0, size.z));
-            rigidbody.velocity = new Vector3(GetRandom(), GetRandom(), GetRandom()).normalized;
-            rigidbody.velocity *= Random.Range(5.0f, 6.0f);
+            ResetBoid();
         }
 
         private void Update()
@@ -100,12 +99,11 @@ namespace FlockingSimulator
         private void OnDrawGizmosSelected()
         {
             Gizmos.color = Color.blue;
-            //Gizmos.DrawWireSphere(rigidbody.position, perceptionRadius);
-            Vector3 dir = new Vector3(Mathf.Sin(Mathf.Deg2Rad * angle), 0, Mathf.Cos(Mathf.Deg2Rad * angle)) * 4;
+            Vector3 dir = new Vector3(Mathf.Sin(Mathf.Deg2Rad * angle), 0, Mathf.Cos(Mathf.Deg2Rad * angle)) * perceptionRadius;
             dir = transform.TransformDirection(dir);
             Gizmos.DrawRay(transform.position, dir);
 
-            dir = new Vector3(Mathf.Sin(Mathf.Deg2Rad * -angle), 0, Mathf.Cos(Mathf.Deg2Rad * -angle)) * 4;
+            dir = new Vector3(Mathf.Sin(Mathf.Deg2Rad * -angle), 0, Mathf.Cos(Mathf.Deg2Rad * -angle)) * perceptionRadius;
             dir = transform.TransformDirection(dir);
             Gizmos.DrawRay(transform.position, dir);
         }
@@ -120,6 +118,7 @@ namespace FlockingSimulator
                 return;
 
             flockingForces.Reset();
+            edgeForces = Vector3.zero;
 
             int total = 0;
 
@@ -141,7 +140,7 @@ namespace FlockingSimulator
 
                         // Separation
                         Vector3 diff = rigidbody.position - boid.rigidbody.position;
-                        diff = new Vector3(diff.x * diff.x, diff.y * diff.y, diff.z * diff.z);
+                        diff = new Vector3(diff.x * Mathf.Abs(diff.x), diff.y * Mathf.Abs(diff.y), diff.z * Mathf.Abs(diff.z));
                         diff /= delta.sqrMagnitude;
                         flockingForces.separation += diff;
 
@@ -150,25 +149,42 @@ namespace FlockingSimulator
                 }
             }
 
-            if(total > 0)
+            var startPos = GameManager.Instance.FieldSize * 0.1f + GameManager.Instance.transform.position;
+            var endPos = GameManager.Instance.FieldSize * 0.9f + GameManager.Instance.transform.position;
+
+            var pos = rigidbody.position;
+            Vector3 edgeForce;
+            // Out of bounds
+            edgeForce = new Vector3(
+                pos.x < startPos.x ? -(pos.x - startPos.x) : 0,
+                pos.y < startPos.y ? -(pos.y - startPos.y) : 0,
+                pos.z < startPos.z ? -(pos.z - startPos.z) : 0
+            );
+            edgeForces += edgeForce * 10;
+
+            edgeForce = new Vector3(
+                pos.x > endPos.x ? -(pos.x - endPos.x) : 0,
+                pos.y > endPos.y ? -(pos.y - endPos.y) : 0,
+                pos.z > endPos.z ? -(pos.z - endPos.z) : 0
+            );
+            edgeForces += edgeForce * 10;
+
+            if (total > 0)
             {
                 // Alignment
                 flockingForces.alignment /= total;
                 flockingForces.alignment = flockingForces.alignment.normalized * maxSpeed;
-                flockingForces.alignment -= rigidbody.velocity;
                 flockingForces.alignment = flockingForces.alignment.Limit(maxForce);
 
                 // Cohesion
                 flockingForces.cohesion /= total;
                 flockingForces.cohesion -= rigidbody.position;
                 flockingForces.cohesion = flockingForces.cohesion.normalized * maxSpeed;
-                flockingForces.cohesion -= rigidbody.velocity;
                 flockingForces.cohesion = flockingForces.cohesion.Limit(maxForce);
 
                 // Separation
                 flockingForces.separation /= total;
                 flockingForces.separation = flockingForces.separation.normalized * maxSpeed;
-                flockingForces.separation -= rigidbody.velocity;
                 flockingForces.separation = flockingForces.separation.Limit(maxForce);
             }
 
@@ -183,31 +199,25 @@ namespace FlockingSimulator
         /// </summary>
         public void ApplyForces()
         {
+            if (!gameObject.activeSelf)
+                return;
+            
             rigidbody.AddForce(flockingForces.alignment);
             rigidbody.AddForce(flockingForces.cohesion);
             rigidbody.AddForce(flockingForces.separation);
+            rigidbody.AddForce(edgeForces);
+            rigidbody.velocity = rigidbody.velocity.Limit(maxSpeed);
         }
 
         /// <summary>
-        /// Keeps the boids contained in the field size
+        /// Resets the boids velocity and position
         /// </summary>
-        public void Edges()
+        public void ResetBoid()
         {
-            Vector3 pos = transform.position;
-
-            for(int i = 0; i < 3; i++)
-            {
-                if (pos[i] > GameManager.Instance.FieldSize[i])
-                {
-                    pos[i] = 0;
-                }
-                else if (pos[i] < 0)
-                {
-                    pos[i] = GameManager.Instance.FieldSize[i];
-                }
-            }
-
-            transform.position = pos;
+            var size = GameManager.Instance.FieldSize;
+            transform.localPosition = new Vector3(Random.Range(0, size.x), Random.Range(0, size.y), Random.Range(0, size.z));
+            rigidbody.velocity = new Vector3(GetRandom(), GetRandom(), GetRandom()).normalized;
+            rigidbody.velocity *= Random.Range(3.0f, 4.0f);
         }
         #endregion
         #region Protected

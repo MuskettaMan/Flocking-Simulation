@@ -36,6 +36,9 @@ namespace FlockingSimulator
         [SerializeField, Tooltip("The sliders to control the flock behaviour")]
         private ControlSliders controlSliders;
 
+        [SerializeField]
+        private Slider boidAmountSlider;
+
         #endregion
         #region Public
         /// <summary>
@@ -93,20 +96,24 @@ namespace FlockingSimulator
         /// </summary>
         private void Update()
         {
-            foreach (Boid boid in Boids)
-            {
-                boid.Flock();
-                boid.Edges();
-            }
+            for (int i = 0; i < Boids.Count; i++)
+                Boids[i].Flock();
 
-            foreach (Boid boid in Boids)
-            {
-                boid.ApplyForces();
-            }
+            for (int i = 0; i < Boids.Count; i++)
+                Boids[i].ApplyForces();
         }
         #endregion
         #region Public
-
+        /// <summary>
+        /// Reset the positions and velocity of each boid
+        /// </summary>
+        public void ResetBoids()
+        {
+            for(int i = 0; i < Boids.Count; i++)
+            {
+                Boids[i].ResetBoid();
+            }
+        }
         #endregion
         #region Protected
 

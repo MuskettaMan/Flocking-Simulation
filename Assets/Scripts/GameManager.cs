@@ -17,15 +17,15 @@ namespace nl.DTT.KVA.Example
         #region Variables
         #region Editor
         /// <summary>
-        /// Size of the the field all teh boids get spawned on
+        /// Size of the the field all the boids get spawned on
         /// </summary>
-        [SerializeField, Tooltip("Size of the the field all teh boids get spawned on")]
+        [SerializeField, Tooltip("Size of the the field all the boids get spawned on")]
         private Vector3 fieldSize = new Vector3(50, 50, 50);
         #endregion
         #region Public
         /// <summary>
         /// Public accessor for field size
-        /// <para>Size of the the field all teh boids get spawned on</para>
+        /// <para>Size of the the field all the boids get spawned on</para>
         /// </summary>
         public Vector3 FieldSize => fieldSize;
 
@@ -35,7 +35,6 @@ namespace nl.DTT.KVA.Example
         public static GameManager Instance;
         #endregion
         #region Private
-
         #endregion
         #endregion
         #region Methods
@@ -61,6 +60,14 @@ namespace nl.DTT.KVA.Example
         {
             Gizmos.color = Color.red;
             Gizmos.DrawWireCube(transform.position + fieldSize / 2, fieldSize);
+
+            var startPos = FieldSize * 0.1f + transform.position;
+            var endPos = FieldSize * 0.9f + transform.position;
+
+            Gizmos.color = Color.green;
+            Gizmos.DrawSphere(startPos, 0.5f);
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawSphere(endPos, 0.5f);
         }
 
         #endregion
